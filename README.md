@@ -132,7 +132,7 @@ cp .env.example .env
 
 > **Subir os mesmos plugins que o time:** nomeie os plugins no `setup.sh` (plugins gratuitos do repositório oficial são instalados via WP-CLI).
 
-**Nota**: o setup.sh cria o formulário CF7 com um ID novo a cada execução e substitui o placeholder `SCL_FORM_ID` nos templates — por isso é seguro rodá-lo repetidamente (idempotente).
+**Nota**: o setup.sh cria o formulário CF7 com um ID novo a cada execução e substitui o placeholder `SCL_FORM_ID` nos templates — por isso é seguro rodá-lo repetidamente (idempotente). Para rodar **múltiplos ambientes na mesma máquina**, mude `CONTAINER_PREFIX` e as portas no `.env` (ex.: `CONTAINER_PREFIX=loja`, `WP_PORT=13000`).
 
 ---
 

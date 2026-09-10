@@ -9,10 +9,30 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
-COMPOSE="docker compose"
-# O container wpcli fica persistente (sleep infinity) e usamos docker exec
-# (docker compose run conflita com o entrypoint "sh -c" do container)
-WP="docker exec solar_wpcli wp"
+# Carrega .env (se existir) para portas, prefixo e credenciais locais.
+
+set -a
+# shellcheck disable=SC1091
+[ -f "$ROOT_DIR/.env" ] && . "$ROOT_DIR/.env"
+set +a
+
+# Usa sudo automaticamente se o usuário atual não tiver acesso ao Docker daemon.
+if ! docker info >/dev/null 2>&1; then
+	if sudo -n docker info >/dev/null 2>&1; then
+		DOCKER="sudo docker"
+	else
+		echo "ERRO: sem acesso ao Docker daemon." >&2
+		exit 1
+	fi
+else
+	DOCKER="docker"
+fi
+
+COMPOSE="$DOCKER compose"
+CONTAINER_PREFIX="${CONTAINER_PREFIX:-solar}"
+# O container wpcli fica persistente(esleep infinity) e usamos docker exec
+#(docker compose run conflita com o entrypoint "sh -c" do container)
+WP="$DOCKER exec ${CONTAINER_PREFIX}_wpcli wp"
 
 echo "==> 1/7 Subindo containers (WordPress, MariaDB, phpMyAdmin)"
 $COMPOSE up -d --wait
@@ -41,8 +61,8 @@ fi
 # Garante permissões dos bind mounts para o Apache (uid 33):
 # uploads precisa ser escrevível; tema e plugins precisam ser legíveis.
 mkdir -p wp-content/uploads wp-content/plugins wp-content/mu-plugins
-sudo chown -R 33:33 wp-content/uploads 2>/dev/null || true
-sudo chmod -R a+rX wp-content/themes wp-content/plugins wp-content/mu-plugins 2>/dev/null || true
+chown -R 33:33 wp-content/uploads 2>/dev/null || sudo chown -R 33:33 wp-content/uploads 2>/dev/null || true
+chmod -R a+rX wp-content/themes wp-content/plugins wp-content/mu-plugins 2>/dev/null || sudo chmod -R a+rX wp-content/themes wp-content/plugins wp-content/mu-plugins 2>/dev/null || true
 
 echo "==> 4/7 Ativando tema e plugins básicos"
 $WP theme activate solar-consulting-landing
@@ -90,8 +110,8 @@ EOF
 
 # Post content apenas identifica o formulário; os campos reais (_form) e o e-mail (_mail)
 # são configurados via script PHP (evita problema de escaping do WP-CLI com colchetes).
-sudo docker exec -i solar_wpcli sh -c "cat > /tmp/fix-cf7.php" < bin/fix-cf7.php
-sudo docker exec -e SCL_FORM_ID="$FORM_ID" solar_wpcli wp eval-file /tmp/fix-cf7.php >/dev/null 2>&1 || {
+$DOCKER exec -i ${CONTAINER_PREFIX}_wpcli sh -c "cat > /tmp/fix-cf7.php" < bin/fix-cf7.php
+$DOCKER exec -e SCL_FORM_ID="$FORM_ID" ${CONTAINER_PREFIX}_wpcli wp eval-file /tmp/fix-cf7.php >/dev/null 2>&1 || {
 	echo "   AVISO: falha ao configurar CF7 — ajuste manual via /wp-admin/admin.php?page=wpcf7"
 }
 rm -f "$TMP_FORM"

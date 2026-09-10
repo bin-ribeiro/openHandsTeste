@@ -1,7 +1,7 @@
 services:
   db:
     image: mariadb:11.4
-    container_name: solar_db
+    container_name: ${CONTAINER_PREFIX:-solar}_db
     restart: unless-stopped
     environment:
       MARIADB_DATABASE: ${DB_NAME:-wordpress}
@@ -18,7 +18,7 @@ services:
 
   wordpress:
     image: wordpress:6.8-php8.3-apache
-    container_name: solar_wordpress
+    container_name: ${CONTAINER_PREFIX:-solar}_wordpress
     restart: unless-stopped
     depends_on:
       db:
@@ -39,7 +39,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin:5.2
-    container_name: solar_phpmyadmin
+    container_name: ${CONTAINER_PREFIX:-solar}_phpmyadmin
     restart: unless-stopped
     depends_on:
       db:
@@ -54,7 +54,7 @@ services:
 
   wpcli:
     image: wordpress:cli-php8.3
-    container_name: solar_wpcli
+    container_name: ${CONTAINER_PREFIX:-solar}_wpcli
     restart: "no"
     depends_on:
       db:
