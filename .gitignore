@@ -1,0 +1,46 @@
+# Ambiente local
+.env
+.env.local
+*.log
+
+# Banco e dados do Docker (não versionar dados locais de dev)
+db_data/
+mysql/
+
+# WordPress — dados gerados em runtime
+wp-content/uploads/*
+!wp-content/uploads/.gitkeep
+wp-content/upgrade/
+wp-content/plugins/*
+!wp-content/plugins/.gitkeep
+!wp-content/plugins/README.md
+wp-content/cache/
+wp-content/advanced-cache.php
+wp-content/object-cache.php
+wp-content/db.php
+wp-content/backup-db/
+wp-content/backups/
+
+# Arquivos gerados pelo WordPress no diretório raiz
+*.sql
+wp-config.php
+wp-config-sample.php
+index.php
+xmlrpc.php
+wp-*.php
+license.txt
+readme.html
+sitemap.xml
+
+# Não versionar o core do WordPress (baixado pelos containers)
+# wp-admin, wp-includes são criados pela imagem wordpress
+wp-admin/
+wp-includes/
+wp-content/index.php
+
+# Sistema operacional / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp

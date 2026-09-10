@@ -1,0 +1,95 @@
+/* ===== Ajustes de layout do tema ===== */
+
+:root {
+	--scl-radius-card: 12px;
+}
+
+/* Seções com padrão: usa gutter wide */
+body.scl-front-page .wp-block-group.scl-section {
+	padding-block: var(--wp--custom--spacing--section);
+}
+
+/* Cards: elevação sutil */
+.wp-block-group.scl-card {
+	border-radius: var(--scl-radius-card);
+	box-shadow: var(--wp--preset--shadow--card);
+	border: 1px solid rgba(2, 48, 71, 0.06);
+	transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.wp-block-group.scl-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 12px 28px rgba(2, 48, 71, 0.14);
+}
+
+/* Badge "selo" */
+.scl-badge {
+	display: inline-block;
+	padding: 8px 16px;
+	border-radius: 9999px;
+	background: rgba(255, 183, 3, 0.12);
+	color: var(--wp--preset--color--deep-blue);
+	font-size: 0.8125rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+/* Passos da seção "Como funciona" */
+.scl-step-number {
+	font-size: 2.5rem;
+	line-height: 1;
+	color: rgba(255, 183, 3, 0.9);
+	font-weight: 800;
+}
+
+/* Depoimentos: aspas decorativas */
+.scl-quote::before {
+	content: "“";
+	display: block;
+	font-size: 3.5rem;
+	line-height: 0.6;
+	color: var(--wp--preset--color--solar);
+	margin-bottom: 0.5rem;
+}
+
+/* Hero: plano de fundo com gradiente suave */
+.scl-hero {
+	background: radial-gradient(1200px 600px at 90% 0%, rgba(255, 183,,3, 0.22), transparent 60%),
+				radial-gradient(900px 500px at 10% 100%, rgba(142, 202, 230, 0.35), transparent 55%),
+				linear-gradient(180deg, #FFFFFF 0%, var(--wp--preset--color--light) 100%);
+}
+
+/* CTA final */
+.scl-cta-band {
+	background: var(--wp--preset--color--deep-blue);
+}
+
+.scl-cta-band h2, .scl-cta-band p {
+	color: #FFFFFF;
+}
+
+/* Formulário: espaçamento do container */
+.scl-form-wrap {
+	max-width: 560px;
+	margin-inline: auto;
+}
+
+/* FAQ: borda suave entre itens */
+.scl-faq-item {
+	border-bottom: 1px solid rgba(2, ,48,,71, 0.1);
+}
+.scl-faq-item:last-child {
+	border-bottom: 0;
+}
+
+/* Footer: cor de fundo e texto */
+.scl-footer {
+	background: var(--wp--preset--color--ink);
+	color: rgba(255, 255, 255, 0.75);
+}
+
+/* Responsivo: ajustes simples */
+@media (max-width: 781px) {
+	.scl-hero { background-size: cover; }
+}
